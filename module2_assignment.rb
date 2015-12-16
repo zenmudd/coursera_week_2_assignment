@@ -13,7 +13,10 @@ class LineAnalyzer
   end
 
   def calculate_word_frequency
-    current_line = @content.split(" ")
+    current_line = @content.split(" ").each do |each_line|
+      each_line.downcase!
+    end
+    
     word_frequency = {}
     
     current_line.each do |word|
@@ -21,17 +24,15 @@ class LineAnalyzer
 
       word_frequency[word] += 1
     end
-        
-    word_frequency.each do |frequency_element|
-      @highest_wf_words.push(frequency_element[0]) unless frequency_element[1] == 1
-    end
 
     @highest_wf_count = word_frequency.values.max
-    
+    word_frequency.each do |frequency_element|
+      @highest_wf_words.push(frequency_element[0]) unless frequency_element[1] != @highest_wf_count
+    end
+  
   end
 
 end
-
 
 class Solution 
 
@@ -55,19 +56,17 @@ class Solution
 
   end
 
- 
-
   def calculate_line_with_highest_frequency
-    # 12.1
+    
     @highest_count_words_across_lines = []
     highest_wf_count_values = []
 
     @analyzers.each do |analyzer_object|
       highest_wf_count_values.push(analyzer_object.highest_wf_count)
     end
+
     @highest_count_across_lines = highest_wf_count_values.sort.reverse[0]
-    
-    # 12.2
+  
     analizer_cell = 0
     @analyzers.each do |analyzer_object|
       if analyzer_object.highest_wf_count == @highest_count_across_lines
